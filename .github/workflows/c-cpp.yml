@@ -1,0 +1,39 @@
+name: C/C++ CI
+
+on: push
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    container:
+      image: galeksandrp/travistest:docker-build-openwrt-alpine
+      options: -u root
+
+    steps:
+    - name: sudo install
+      run: apk add --update sudo
+    - uses: actions/checkout@v2
+    - name: feeds update
+      run: ./scripts/feeds update -a
+    - name: feeds install
+      run: ./scripts/feeds install -a
+    - name: diffconfig
+      run: cp diffconfig .config
+    - name: make defconfig
+      run: make defconfig
+    - name: diffconfig.sh
+      run: ./scripts/diffconfig.sh > diffconfig
+    - name: config diff
+      run: git diff
+    - name: chown
+      run: chown ng:ng -R $GITHUB_WORKSPACE
+    - name: make
+      run: sudo -u ng make -j$(nproc)
+    - name: Archive production artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: ax3600
+        path: |
+          bin/targets/ipq807x/generic
+          !bin/targets/ipq807x/generic/packages
