@@ -1,0 +1,47 @@
+name: C/C++ CI
+
+on: push
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - run: sudo rm -rf /usr/share/dotnet
+    - run: sudo rm -rf /usr/local/lib/android
+    - run: sudo rm -rf /opt/ghc
+
+    - uses: actions/checkout@v2
+
+    # Login against a Docker registry except on PR
+    # https://github.com/docker/login-action
+    - name: Log into registry ${{ env.REGISTRY }}
+      if: github.event_name != 'pull_request'
+      uses: docker/login-action@28218f9b04b4f3f62068d7b6ce6ca5b26e35336c
+      with:
+        registry: ${{ env.REGISTRY }}
+        username: ${{ github.actor }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+    - run: echo "GITHUB_BRANCH=$(echo ${{ github.ref }} | cut -d/ -f3)" >> $GITHUB_ENV
+    - run: echo "DOCKER_TAG=${{ github.repository }}:${{ env.GITHUB_BRANCH }}" >> $GITHUB_ENV
+
+    - run: docker pull ${{ env.DOCKER_TAG }} || (docker build -t ${{ env.DOCKER_TAG }} -f Dockerfile-pull . && docker build -t ${{ env.DOCKER_TAG }} -f Dockerfile-push .)
+    - run: docker build -t ${{ env.DOCKER_TAG }} .
+
+    - run: mkdir -p bin/targets/ipq807x
+    - run: docker run --rm -v$PWD:/opt -uroot ${{ env.DOCKER_TAG }} cp -r /home/ng/openwrt/bin/targets/ipq807x/generic /opt/bin/targets/ipq807x
+
+    - name: Archive production artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: ax3600
+        path: |
+          bin/targets/ipq807x/generic
+          !bin/targets/ipq807x/generic/packages
+
+    # DEID=$(docker run galeksandrp/openwrt:ipq807x-5.15-pr-ci cat /etc/hostname) && docker export $DEID | docker import - galeksandrp/openwrt:ipq807x-5.15-pr-ci && docker rm $DEID
+    - run: docker export $(docker run ${{ env.DOCKER_TAG }} cat /etc/hostname) | docker import - ${{ env.DOCKER_TAG }}
+    - run: docker build -t ${{ env.DOCKER_TAG }} -f Dockerfile-push .
+    - run: docker push ${{ env.DOCKER_TAG }}
