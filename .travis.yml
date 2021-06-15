@@ -1,0 +1,11 @@
+services:
+  - docker
+
+install:
+- docker run --rm -ti -v$PWD:/home/ng/openwrt galeksandrp/travistest:docker-build-openwrt-alpine cp diffconfig .config
+- docker run --rm -ti -v$PWD:/home/ng/openwrt galeksandrp/travistest:docker-build-openwrt-alpine ./scripts/feeds update -a
+- docker run --rm -ti -v$PWD:/home/ng/openwrt galeksandrp/travistest:docker-build-openwrt-alpine ./scripts/feeds install -a
+- docker run --rm -ti -v$PWD:/home/ng/openwrt galeksandrp/travistest:docker-build-openwrt-alpine make defconfig
+
+script:
+- docker run --rm -ti -v$PWD:/home/ng/openwrt galeksandrp/travistest:docker-build-openwrt-alpine make -j4
