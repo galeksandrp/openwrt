@@ -1,0 +1,14 @@
+ version: 2
+ jobs:
+   build:
+     docker:
+       - image: galeksandrp/travistest:docker-build-openwrt-alpine
+     steps:
+       - checkout
+       - run: cp diffconfig .config
+       - run: ./scripts/feeds update -a
+       - run: ./scripts/feeds install -a
+       - run: make defconfig
+       - run: 
+           command: make -j4
+           no_output_timeout: 1h
