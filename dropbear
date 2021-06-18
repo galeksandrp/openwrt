@@ -59,7 +59,6 @@ dropbear_instance()
 	}
 
 	[ -n "${Interface}" ] && {
-		[ -n "${BOOT}" ] && return 0
 
 		network_get_ipaddrs_all ipaddrs "${Interface}" || {
 			echo "interface ${Interface} has no physdev or physdev has no suitable ip"
@@ -132,9 +131,6 @@ start_service()
 	# 稳定版不能打开ssh服务
 	flg_ssh=`nvram get ssh_en`
 	channel=`/sbin/uci get /usr/share/xiaoqiang/xiaoqiang_version.version.CHANNEL`
-	if [ "$flg_ssh" != "1" -o "$channel" = "release" ]; then
-		return 0
-	fi
 
 	[ -s /etc/dropbear/dropbear_rsa_host_key ] || keygen
 
