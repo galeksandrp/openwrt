@@ -1,3 +1,12 @@
 CONFIG_TARGET_ipq807x=y
 CONFIG_TARGET_ipq807x_generic=y
 CONFIG_TARGET_ipq807x_generic_DEVICE_xiaomi_ax3600=y
+CONFIG_PACKAGE_iptables-mod-extra=y
+CONFIG_PACKAGE_iptables-mod-physdev=y
+CONFIG_PACKAGE_kmod-br-netfilter=y
+CONFIG_PACKAGE_kmod-ipt-extra=y
+CONFIG_PACKAGE_kmod-ipt-physdev=y
+CONFIG_PACKAGE_kmod-qca-nss-drv=y
+CONFIG_PACKAGE_kmod-qca-nss-drv-pppoe=y
+CONFIG_PACKAGE_kmod-qca-nss-ecm=y
+CONFIG_PACKAGE_nss-firmware-ipq8074=y
