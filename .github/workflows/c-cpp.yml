@@ -7,15 +7,28 @@ jobs:
 
     runs-on: ubuntu-latest
     container:
-      image: galeksandrp/travistest:docker-build-openwrt-alpine
+      image: galeksandrp/openwrt:docker-ci
       options: -u root
 
     steps:
     - name: sudo install
       run: apk add --update sudo
+
     - uses: actions/checkout@v2
+    - run: mv $GITHUB_WORKSPACE/.git ~/github-workspace-git
+    - run: rm -rf $GITHUB_WORKSPACE && mv /home/ng/openwrt $GITHUB_WORKSPACE
+    - run: mv ~/github-workspace-git $GITHUB_WORKSPACE/.git
+
+    - name: git diff
+      run: git diff --name-status
+
+    - name: git reset
+      run: bash -c 'git checkout $(git diff --name-only)'
+    - name: git clean
+      run: git clean -fd
     - name: cleanup galeksandrp_packages
       run: rm -rf feeds/galeksandrp_packages*
+
     - name: feeds update
       run: ./scripts/feeds update -a
     - name: feeds install
@@ -28,14 +41,17 @@ jobs:
       run: cp diffconfig .config
     - name: make defconfig
       run: make defconfig
+
     - name: diffconfig.sh
       run: ./scripts/diffconfig.sh > diffconfig
     - name: config diff
       run: git diff
+
     - name: chown
       run: chown ng:ng -R $GITHUB_WORKSPACE
     - name: make
       run: sudo -u ng make -j$(nproc)
+
     - name: Archive production artifacts
       uses: actions/upload-artifact@v2
       with:
