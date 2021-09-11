@@ -14,10 +14,16 @@ jobs:
     - name: sudo install
       run: apk add --update sudo
     - uses: actions/checkout@v2
+    - name: cleanup galeksandrp_packages
+      run: rm -rf feeds/galeksandrp_packages*
     - name: feeds update
       run: ./scripts/feeds update -a
     - name: feeds install
       run: ./scripts/feeds install -a
+    - name: feeds uninstall dawn
+      run: ./scripts/feeds uninstall dawn
+    - name: feeds install dawn
+      run: ./scripts/feeds install -p galeksandrp_packages dawn
     - name: diffconfig
       run: cp diffconfig .config
     - name: make defconfig
