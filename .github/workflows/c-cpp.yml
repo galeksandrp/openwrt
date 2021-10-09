@@ -33,10 +33,12 @@ jobs:
       run: ./scripts/feeds update -a
     - name: feeds install
       run: ./scripts/feeds install -a
-    - name: feeds uninstall dawn
-      run: ./scripts/feeds uninstall dawn
-    - name: feeds install dawn
+    - name: feeds uninstall
+      run: ./scripts/feeds uninstall dawn luci-theme-openwrt
+    - name: feeds install -p packages
       run: ./scripts/feeds install -p galeksandrp_packages dawn
+    - name: feeds install -p luci
+      run: ./scripts/feeds install -p galeksandrp_luci luci-theme-openwrt
     - name: diffconfig
       run: cp diffconfig .config
     - name: make defconfig

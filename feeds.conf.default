@@ -4,6 +4,7 @@ src-git routing https://git.openwrt.org/feed/routing.git
 src-git telephony https://git.openwrt.org/feed/telephony.git
 src-git nss_packages https://github.com/robimarko/nss-packages.git
 src-git galeksandrp_packages https://github.com/galeksandrp/packages.git;dawn
+src-git galeksandrp_luci https://github.com/galeksandrp/luci.git;luci-theme-openwrt-menu-expand-on-hover
 #src-git video https://github.com/openwrt/video.git
 #src-git targets https://github.com/openwrt/targets.git
 #src-git oldpackages http://git.openwrt.org/packages.git
