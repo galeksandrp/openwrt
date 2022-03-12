@@ -27,10 +27,8 @@ jobs:
     - name: git clean
       run: git clean -fd
 
-    - name: feeds update
-      run: ./scripts/feeds update -a
-    - name: feeds install
-      run: ./scripts/feeds install -a
+    - name: feeds
+      run: ./feeds.sh
     - name: diffconfig
       run: cp diffconfig .config
     - name: make defconfig
