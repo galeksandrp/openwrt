@@ -1,4 +1,4 @@
-FROM galeksandrp/openwrt:docker-ci-backports
+FROM galeksandrp/openwrt:docker-ci-5-15
 COPY --chown=ng:ng .git /home/ng/openwrt/.git
 #USER root
 
@@ -10,13 +10,11 @@ RUN git clean -fd
 #USER ng
 #RUN rm -rf feeds/galeksandrp_packages*
 
-RUN ./scripts/feeds update -a
-RUN ./scripts/feeds install -a
-#RUN ./scripts/feeds uninstall dawn
-#RUN ./scripts/feeds install -p galeksandrp_packages dawn
+RUN ./feeds.sh
 RUN cp diffconfig .config
 RUN make defconfig
 
 RUN ./scripts/diffconfig.sh > diffconfig
 
-#RUN make -j$(nproc)
+RUN make -j$(nproc)
+
