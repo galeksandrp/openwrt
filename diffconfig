@@ -151,6 +151,7 @@ CONFIG_PACKAGE_rpcd-mod-file=y
 CONFIG_PACKAGE_rpcd-mod-iwinfo=y
 CONFIG_PACKAGE_rpcd-mod-luci=y
 CONFIG_PACKAGE_rpcd-mod-rrdns=y
+CONFIG_PACKAGE_static-neighbor-reports=y
 CONFIG_PACKAGE_stubby=y
 CONFIG_PACKAGE_terminfo=y
 CONFIG_PACKAGE_tor-basic=y
